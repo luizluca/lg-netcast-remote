@@ -1,0 +1,10 @@
+{
+  "appId": "com.luizluc.lgremote",
+  "appName": "LG Remote (NetCast)",
+  "webDir": "www",
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
+}
