@@ -1,7 +1,13 @@
 {
-  "appId": "com.luizluc.lgremote",
+  "appId": "com.luizluca.lgremote",
   "appName": "LG Remote (NetCast)",
   "webDir": "www",
+  "server": {
+    "cleartext": true
+  },
+  "android": {
+    "appendUserAgent": " UDAP/2.0"
+  },
   "plugins": {
     "CapacitorHttp": {
       "enabled": true
