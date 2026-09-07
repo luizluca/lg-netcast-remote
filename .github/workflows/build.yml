@@ -1,23 +1,28 @@
-name: Build Android APK
+name: Build and Create GitHub Release
 
 on:
   push:
-    branches: [ main, master ]
-  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+    tags:
+      - 'v*'
+  workflow_dispatch:
 
 jobs:
-  build:
-    name: Build APK
+  release:
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: write
+
     steps:
-      - name: Checkout Code
+      - name: Checkout Source Code
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
 
       - name: Setup Java JDK
         uses: actions/setup-java@v5
@@ -25,26 +30,38 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Install NPM Dependencies
-        run: npm install
-
       - name: Add Android Platform
         run: npx cap add android
 
-      - name: Generate App Icons
+      - name: Generate App Assets & Icons
         run: |
           npm install @capacitor/assets --no-save
           npx capacitor-assets generate
 
-      - name: Sync Capacitor
+      - name: Sync Capacitor Android
         run: npx cap sync android
 
       - name: Build Android APK
-        working-directory: ./android
-        run: ./gradlew assembleDebug
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+          mv app/build/outputs/apk/debug/app-debug.apk "app/build/outputs/apk/debug/LG-NetCast-Remote-${{ github.ref_name }}.apk"
+        env:
+          ANDROID_HOME: /usr/local/lib/android/sdk
 
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: LG-Remote-App
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          files: android/app/build/outputs/apk/debug/LG-NetCast-Remote-*.apk
+          name: Release ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          body: |
+            LG NetCast Remote APK (${{ github.ref_name }})
+            
+            - Built automatically via GitHub Actions
+            - Compatible with Android 7.0+
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
