@@ -4,45 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="page_title">LG Smart TV Remote</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a50034'><path d='M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12zm-5-7v2h3v-2h-3zm-6.5-1L7 6.5 4.5 9l2.5 2.5L9.5 9 12 11.5 14.5 9 12 6.5 9.5 9z'/></svg>">
-    
+    <link rel="icon" type="image/jpeg" href="icon.jpg">
+
     <style>
         :root {
             --bg-color: #121212; --card-bg: #1e1e1e; --accent-color: #a50034;
             --btn-bg: #2d2d2d; --text-color: #ffffff;
         }
 
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            background-color: var(--bg-color); color: var(--text-color); 
-            margin: 0; padding: 20px; display: flex; flex-direction: column; 
-            align-items: center; padding-bottom: 200px; 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color); color: var(--text-color);
+            margin: 0; padding: 20px; display: flex; flex-direction: column;
+            align-items: center; padding-bottom: 200px;
         }
 
-        /* HEADER */
-        .app-header {
-            display: flex; align-items: center; gap: 12px;
-            margin-bottom: 25px; width: 100%; max-width: 1200px;
-        }
+        .app-header { display: flex; align-items: center; gap: 12px; margin-bottom: 25px; width: 100%; max-width: 1200px; }
         .app-header svg { width: 36px; height: 36px; stroke: var(--accent-color); }
         .app-header h1 { margin: 0; font-size: 22px; font-weight: 600; }
 
-        /* MASONRY LAYOUT (CSS COLUMNS) */
-        .container { 
-            width: 100%; max-width: 1200px; 
-            column-count: 1; column-gap: 20px;
-        }
-        
+        .container { width: 100%; max-width: 1200px; column-count: 1; column-gap: 20px; }
         @media (min-width: 700px) { .container { column-count: 2; } }
         @media (min-width: 1050px) { .container { column-count: 3; } }
 
-        .card { 
-            background-color: var(--card-bg); padding: 18px; border-radius: 12px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+        .card {
+            background-color: var(--card-bg); padding: 18px; border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             margin-bottom: 20px; display: inline-block; width: 100%; box-sizing: border-box;
-            break-inside: avoid; page-break-inside: avoid; /* Impede o cartão de quebrar no meio */
+            break-inside: avoid; page-break-inside: avoid;
         }
-        
+
         h3 { margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px; font-size: 16px; color: #ccc; }
 
         input { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #444; background-color: #000; color: #fff; font-size: 16px; box-sizing: border-box; }
@@ -54,23 +45,55 @@
 
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
-        
-        .dpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
+
+        .dpad-wrapper { margin: 35px 0; padding: 20px 0; border-top: 1px dashed #333; border-bottom: 1px dashed #333; }
+        .dpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         .dpad button { height: 65px; font-size: 18px; }
 
         .vol-ch-container { display: flex; justify-content: space-between; gap: 20px; margin-bottom: 15px; }
-        .column-btn { display: flex; flex-direction: column; gap: 10px; flex: 1; }
-        .column-btn button { height: 50px; font-size: 15px; }
+        .column-btn { display: flex; flex-direction: column; gap: 10px; flex: 1; align-items: center;}
+        .column-btn button { height: 50px; font-size: 15px; width: 100%; }
 
         .btn-red { border-bottom: 4px solid #f44336; height: 40px; }
         .btn-green { border-bottom: 4px solid #4caf50; height: 40px; }
         .btn-yellow { border-bottom: 4px solid #ffeb3b; height: 40px; }
         .btn-blue { border-bottom: 4px solid #2196f3; height: 40px; }
 
-        /* TOASTS & CONSOLE */
+        #dedicated-trackpad {
+            width: 100%; height: 220px; background-color: #111;
+            border: 2px dashed #444; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: #555; font-weight: bold; font-size: 16px; text-align: center;
+            touch-action: none; cursor: crosshair; user-select: none;
+        }
+
+        #theater-mode {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.95); z-index: 9999; display: none; flex-direction: row;
+        }
+        .theater-image-container {
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            padding: 15px; overflow: hidden;
+        }
+
+        #screenshotImg, #theaterImg {
+            max-width: 100%; max-height: 100%; object-fit: contain;
+            border-radius: 8px; border: 2px solid #333;
+            user-select: none; -webkit-user-drag: none;
+            touch-action: none; cursor: crosshair;
+        }
+
+        .theater-sidebar {
+            width: 90px; background: #111; border-left: 1px solid #333;
+            display: flex; flex-direction: column; padding: 10px; gap: 8px;
+            overflow-y: auto; box-sizing: border-box;
+        }
+        .theater-sidebar button { padding: 12px 0; width: 100%; font-size: 14px; }
+        .dpad-mini { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; }
+
         #toast {
             visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center;
-            border-radius: 8px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 30px;
+            border-radius: 8px; padding: 16px; position: fixed; z-index: 10000; left: 50%; bottom: 30px;
             font-size: 14px; transform: translateX(-50%); box-shadow: 0px 4px 12px rgba(0,0,0,0.5);
             transition: visibility 0s, opacity 0.3s linear; opacity: 0;
         }
@@ -87,20 +110,14 @@
         .log-entry { margin-bottom: 4px; border-bottom: 1px dashed #333; padding-bottom: 2px; }
         .log-error { color: #ff5555; }
         .log-warn { color: #ffb86c; }
-        
-        #toggleDebug {
-            position: fixed; bottom: 10px; right: 10px; background: #444; font-size: 10px;
-            padding: 8px 12px; border-radius: 6px; z-index: 901; opacity: 0.8;
-        }
+        #toggleDebug { position: fixed; bottom: 10px; right: 10px; background: #444; font-size: 10px; padding: 8px 12px; border-radius: 6px; z-index: 901; opacity: 0.8; }
     </style>
 </head>
 <body>
 
 <div class="app-header">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
-        <path d="M17 2l-5 5-5-5"></path>
-        <path d="M12 18h.01"></path>
+        <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><path d="M17 2l-5 5-5-5"></path><path d="M12 18h.01"></path>
     </svg>
     <h1 data-i18n="page_title">LG Smart TV Remote</h1>
 </div>
@@ -108,15 +125,26 @@
 <div class="container">
     <div class="card">
         <h3 data-i18n="conn_title">1. Connection</h3>
-        <input type="text" id="tvIp" value="" data-i18n="ip_placeholder" placeholder="TV Address" autocapitalize="none" autocorrect="off" spellcheck="false">
-        
-        <div id="auth-step-1">
-            <button class="action-btn" data-i18n="btn_req_pin" onclick="requestPin()">1. Request PIN on TV</button>
+        <div id="conn-saved" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #000; padding: 12px; border-radius: 6px; border: 1px solid #444;">
+                <div>
+                    <div id="saved-ip-label" style="font-weight: bold; font-size: 16px;"></div>
+                    <div id="tv-status" style="font-size: 12px; color: #aaa; margin-top: 4px;" data-i18n="status_connecting">Conectando...</div>
+                </div>
+                <button class="action-btn" data-i18n="btn_change" style="width: auto; margin: 0; padding: 8px 15px; background-color: #555;" onclick="changeTv()">Trocar</button>
+            </div>
         </div>
 
-        <div id="auth-step-2" style="display: none; margin-top: 15px; border-top: 1px dashed #444; padding-top: 15px;">
-            <input type="text" id="pinCode" value="" data-i18n="pin_placeholder" placeholder="PIN" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
-            <button class="action-btn" data-i18n="btn_auth" style="background-color: #444;" onclick="pairTv()">2. Authenticate</button>
+        <div id="conn-setup">
+            <input type="text" id="tvIp" value="" data-i18n="ip_placeholder" placeholder="TV Address" autocapitalize="none" autocorrect="off" spellcheck="false">
+            <div id="auth-step-1">
+                <button class="action-btn" data-i18n="btn_req_pin" onclick="requestPin()">1. Request PIN on TV</button>
+            </div>
+
+            <div id="auth-step-2" style="display: none; margin-top: 15px; border-top: 1px dashed #444; padding-top: 15px;">
+                <input type="text" id="pinCode" value="" data-i18n="pin_placeholder" placeholder="PIN" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+                <button class="action-btn" data-i18n="btn_auth" style="background-color: #444;" onclick="pairTv()">2. Authenticate</button>
+            </div>
         </div>
     </div>
 
@@ -129,7 +157,7 @@
         </div>
         <div class="grid-3">
             <button onclick="sendKey(410)">AV MODE</button>
-            <button onclick="sendKey(400)">3D</button>
+            <button id="btn3d" onclick="sendKey(400)">3D</button>
             <button onclick="sendKey(26)">MUTE</button>
         </div>
     </div>
@@ -144,20 +172,26 @@
         <div class="vol-ch-container">
             <div class="column-btn">
                 <button onclick="sendKey(24)">VOL +</button>
+                <div id="volDisplay" style="font-size: 20px; font-weight: bold; margin: 4px 0;">--</div>
                 <button onclick="sendKey(25)">VOL -</button>
             </div>
             <div class="column-btn">
                 <button onclick="sendKey(27)">CH ▲</button>
+                <div style="flex:1;"></div>
                 <button onclick="sendKey(28)">CH ▼</button>
             </div>
         </div>
-        <div class="dpad">
-            <div></div><button onclick="sendKey(12)">▲</button><div></div>
-            <button onclick="sendKey(14)">◄</button>
-            <button style="background-color: #555; font-size: 14px;" onclick="sendKey(20)">OK</button>
-            <button onclick="sendKey(15)">►</button>
-            <div></div><button onclick="sendKey(13)">▼</button><div></div>
+
+        <div class="dpad-wrapper">
+            <div class="dpad">
+                <div></div><button onclick="sendKey(12)">▲</button><div></div>
+                <button onclick="sendKey(14)">◄</button>
+                <button style="background-color: #555; font-size: 14px;" onclick="sendKey(20)">OK</button>
+                <button onclick="sendKey(15)">►</button>
+                <div></div><button onclick="sendKey(13)">▼</button><div></div>
+            </div>
         </div>
+
         <div class="grid-3" style="margin-bottom: 0;">
             <button data-i18n="btn_back" onclick="sendKey(23)">BACK</button>
             <button onclick="sendKey(22)">MENU</button>
@@ -183,12 +217,95 @@
         </div>
     </div>
 
-    <div class="card" style="border: 1px solid var(--accent-color);">
-        <h3 data-i18n="tester_title">5. Discover Buttons</h3>
+    <div class="card">
+        <h3 data-i18n="smart_title">5. Screen & Keyboard</h3>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+            <button class="action-btn" data-i18n="btn_screenshot" style="background-color: #444; flex: 1; margin: 0;" onclick="getTVScreenshot(); haptic(40);">📷 Frame</button>
+            <button class="action-btn" id="btnScreencast" data-i18n="btn_cast_start" style="background-color: #2196f3; flex: 1; margin: 0;" onclick="toggleScreencast(); haptic(40);">▶️ Cast</button>
+        </div>
+
+        <img id="screenshotImg" draggable="false" style="width: 100%; border-radius: 8px; display: none; margin-bottom: 10px; border: 1px solid #333;"
+             onpointerdown="initTrackpad(event)"
+             onpointermove="moveTrackpad(event)"
+             onpointerup="endTrackpad(event)"
+             onpointercancel="endTrackpad(event)"
+             onwheel="handleWheel(event)" />
+
+        <div id="screen-actions" style="display: none; gap: 10px; margin-bottom: 15px;">
+            <button class="action-btn" data-i18n="btn_save" style="background-color: #4caf50; flex: 1; margin: 0; padding: 10px;" onclick="saveScreenshot(); haptic(40);">💾 Salvar</button>
+            <button class="action-btn" data-i18n="btn_theater" style="background-color: #ff9800; flex: 1; margin: 0; padding: 10px;" onclick="openTheater(); haptic(40);">📺 Expandir</button>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <input type="text" id="keyboardInput" data-i18n="text_placeholder" placeholder="Type here..." style="margin-bottom: 0; flex: 1;">
+            <button class="action-btn" data-i18n="btn_send_text" style="margin-bottom: 0; width: 80px;" onclick="sendTextFromInput(); haptic(40);">Send</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 data-i18n="trackpad_title">6. Touchpad</h3>
+        <div id="dedicated-trackpad"
+             onpointerdown="initTrackpad(event)"
+             onpointermove="moveTrackpad(event)"
+             onpointerup="endTrackpad(event)"
+             onpointercancel="endTrackpad(event)"
+             onwheel="handleWheel(event)">
+            <span data-i18n="trackpad_desc">Arraste p/ mover. 2 dedos p/ Rolar. Toque p/ clicar.</span>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button class="action-btn" style="background-color: #555; margin-bottom: 0;" onclick="dropFocus()">🖱️ Tirar Foco da TV</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 data-i18n="tester_title">7. Discover Buttons</h3>
         <div style="display: flex; gap: 10px;">
-            <input type="number" id="customKeyCode" data-i18n="code_placeholder" placeholder="Code" style="margin-bottom: 0; width: 35%;" inputmode="numeric">
+            <input type="number" id="customKeyCode" data-i18n="code_placeholder" placeholder="Code" style="margin-bottom: 0; width: 35%;" inputmode="numeric" min="1" max="999" oninput="this.value = !!this.value && Math.abs(this.value) >= 1 ? Math.abs(this.value) : null">
             <button class="action-btn" data-i18n="btn_test" style="margin-bottom: 0; flex: 1;" onclick="sendCustomKey()">Test on TV</button>
         </div>
+    </div>
+</div>
+
+<div id="theater-mode">
+    <div class="theater-image-container">
+        <img id="theaterImg" src="" draggable="false"
+             onpointerdown="initTrackpad(event)"
+             onpointermove="moveTrackpad(event)"
+             onpointerup="endTrackpad(event)"
+             onpointercancel="endTrackpad(event)"
+             onwheel="handleWheel(event)" />
+    </div>
+    <div class="theater-sidebar">
+        <button onclick="closeTheater(); haptic(40);" style="background: #f44336; margin-bottom: 15px;">✖ Sair</button>
+
+        <div style="display: flex; gap: 5px;">
+            <button onclick="sendTextPrompt(); haptic(40);" style="background: #2196f3; flex: 1;">⌨️</button>
+            <button onclick="dropFocus()" style="background: #555; flex: 1;" title="Tirar Foco">🖱️</button>
+        </div>
+
+        <div style="height: 15px; border-top: 1px solid #333; margin: 5px 0;"></div>
+
+        <button onclick="sendKey(24)">V +</button>
+        <button onclick="sendKey(25)">V -</button>
+        <div style="height: 10px;"></div>
+        <button onclick="sendKey(27)">C ▲</button>
+        <button onclick="sendKey(28)">C ▼</button>
+
+        <div style="height: 15px; border-top: 1px solid #333; margin: 5px 0;"></div>
+
+        <button onclick="sendKey(12)">▲</button>
+        <div class="dpad-mini">
+            <button onclick="sendKey(14)">◄</button>
+            <button onclick="sendKey(15)">►</button>
+        </div>
+        <button onclick="sendKey(13)">▼</button>
+        <button onclick="sendKey(20)" style="background: #555; margin-top: 5px;">OK</button>
+
+        <div style="height: 15px; border-top: 1px solid #333; margin: 5px 0;"></div>
+
+        <button onclick="sendKey(23)">BACK</button>
     </div>
 </div>
 
@@ -200,6 +317,12 @@
     const debugConsole = document.getElementById('debug-console');
     const toast = document.getElementById('toast');
     let toastTimeout;
+
+    function haptic(ms = 40) {
+        if (navigator.vibrate) {
+            navigator.vibrate(ms);
+        }
+    }
 
     function hijackConsole(method, cssClass) {
         const original = console[method];
@@ -213,9 +336,11 @@
             debugConsole.scrollTop = debugConsole.scrollHeight;
         };
     }
+
     hijackConsole('log', ''); hijackConsole('warn', 'log-warn'); hijackConsole('error', 'log-error');
 
     function toggleConsole() {
+        haptic(40);
         if (debugConsole.style.display === 'none' || debugConsole.style.display === '') {
             debugConsole.style.display = 'block';
             document.getElementById('toggleDebug').innerText = 'Hide Log';
@@ -238,42 +363,94 @@
         "en": {
             "page_title": "LG Smart TV Remote",
             "conn_title": "1. Connection", "ip_placeholder": "TV Address", "pin_placeholder": "PIN",
-            "btn_req_pin": "1. Request PIN on TV", "btn_auth": "2. Authenticate",
-            "sys_title": "2. System", "nav_title": "3. Navigation", "btn_back": "BACK", 
-            "media_title": "4. Media & Colors", "toast_auth_sent": "Auth command sent!", 
+            "btn_req_pin": "1. Request PIN", "btn_auth": "2. Authenticate", "btn_change": "Change",
+            "status_connecting": "Connecting...", "status_connected": "Connected", "status_unreachable": "Out of reach",
+            "sys_title": "2. System", "nav_title": "3. Navigation", "btn_back": "BACK",
+            "media_title": "4. Media & Colors", "toast_auth_sent": "Auth command sent!",
             "toast_req_pin": "Check TV for PIN", "toast_no_ip": "Please enter TV Address.",
             "toast_no_pin": "Please enter PIN.",
-            "tester_title": "5. Discover Buttons", "code_placeholder": "Code", "btn_test": "Test on TV"
+            "smart_title": "5. Screen & Keyboard", "btn_screenshot": "📷 Frame", "btn_cast_start": "▶️ Cast",
+            "btn_cast_stop": "⏹️ Stop", "btn_save": "💾 Save", "btn_theater": "📺 Expand",
+            "text_placeholder": "Type here...", "btn_send_text": "Send",
+            "trackpad_title": "6. Touchpad", "trackpad_desc": "Slide to move. 2 fingers to scroll. Tap to click.",
+            "tester_title": "7. Discover Buttons", "code_placeholder": "Code", "btn_test": "Test on TV"
         },
         "pt": {
             "page_title": "LG Smart TV Remote",
             "conn_title": "1. Conexão", "ip_placeholder": "Endereço da TV", "pin_placeholder": "PIN",
-            "btn_req_pin": "1. Solicitar PIN na TV", "btn_auth": "2. Autenticar",
-            "sys_title": "2. Sistema", "nav_title": "3. Navegação", "btn_back": "VOLTAR", 
-            "media_title": "4. Mídia e Cores", "toast_auth_sent": "Comando de autenticação enviado!", 
-            "toast_req_pin": "Veja o PIN na tela da TV", "toast_no_ip": "Por favor, digite o endereço da TV.",
-            "toast_no_pin": "Por favor, digite o PIN.",
-            "tester_title": "5. Descobrir Botões", "code_placeholder": "Cód.", "btn_test": "Testar na TV"
+            "btn_req_pin": "1. Solicitar PIN", "btn_auth": "2. Autenticar", "btn_change": "Trocar",
+            "status_connecting": "Conectando...", "status_connected": "Conectado", "status_unreachable": "Fora do alcance",
+            "sys_title": "2. Sistema", "nav_title": "3. Navegação", "btn_back": "VOLTAR",
+            "media_title": "4. Mídia e Cores", "toast_auth_sent": "Autenticação enviada!",
+            "toast_req_pin": "Veja o PIN na TV", "toast_no_ip": "Digite o endereço.",
+            "toast_no_pin": "Digite o PIN.",
+            "smart_title": "5. Tela e Teclado", "btn_screenshot": "📷 Quadro", "btn_cast_start": "▶️ Cast",
+            "btn_cast_stop": "⏹️ Parar", "btn_save": "💾 Salvar", "btn_theater": "📺 Expandir",
+            "text_placeholder": "Digite algo...", "btn_send_text": "Enviar",
+            "trackpad_title": "6. Touchpad", "trackpad_desc": "Arraste p/ mover. 2 dedos p/ rolar. Toque p/ clicar.",
+            "tester_title": "7. Descobrir Botões", "code_placeholder": "Cód.", "btn_test": "Testar na TV"
         }
     };
-    
-    const currentLang = (navigator.language || navigator.userLanguage).toLowerCase().startsWith('pt') ? 'pt' : 'en';
 
+    const currentLang = (navigator.language || navigator.userLanguage).toLowerCase().startsWith('pt') ? 'pt' : 'en';
     let pendingPinAddress = "";
     let pinTimeoutRef = null;
     const PIN_LIFESPAN_MS = 60000;
+
+    let isScreencasting = false;
+    let liveTextBuffer = "";
+    let isKeyboardOpen = false;
+    let keyboardMode = 'typing';
+    let localVolume = null;
+    let localIsMuted = false;
+
+    let isPollingVol = false;
+    let isPollingCtx = false;
+
+    function clearTextBuffer() { liveTextBuffer = ""; }
+
+    function updateConnectionStatus(isOnline) {
+        const statusEl = document.getElementById('tv-status');
+        if (!statusEl) return;
+        if (isOnline) {
+            statusEl.innerText = translations[currentLang].status_connected;
+            statusEl.style.color = '#4caf50';
+        } else {
+            statusEl.innerText = translations[currentLang].status_unreachable;
+            statusEl.style.color = '#f44336';
+        }
+    }
+
+    function changeTv() {
+        haptic(40);
+        document.getElementById('conn-saved').style.display = 'none';
+        document.getElementById('conn-setup').style.display = 'block';
+    }
 
     window.addEventListener('DOMContentLoaded', () => {
         const dict = translations[currentLang];
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
-            if (dict[key]) el.tagName === 'INPUT' ? el.placeholder = dict[key] : el.innerText = dict[key];
+            if (dict[key]) {
+                if (el.tagName === 'INPUT') el.placeholder = dict[key];
+                else el.innerText = dict[key];
+            }
         });
-        
+
         const savedIp = localStorage.getItem('tvIp');
+        const savedPin = localStorage.getItem('tvPin');
+
         if (savedIp) {
             document.getElementById('tvIp').value = savedIp;
-            console.log("Restored TV Address from storage:", savedIp);
+            if (savedPin) {
+                document.getElementById('saved-ip-label').innerText = savedIp;
+                document.getElementById('conn-setup').style.display = 'none';
+                document.getElementById('conn-saved').style.display = 'block';
+
+                document.getElementById('tv-status').innerText = translations[currentLang].status_connecting;
+                document.getElementById('tv-status').style.color = '#aaa';
+                startPollers();
+            }
         }
     });
 
@@ -281,108 +458,512 @@
         const currentAddress = this.value.trim();
         const authStep2 = document.getElementById('auth-step-2');
         authStep2.style.display = (pendingPinAddress && currentAddress === pendingPinAddress) ? 'block' : 'none';
+        if(currentAddress && localStorage.getItem('tvPin')) startPollers();
     });
 
-    async function sendTVRequest(endpoint, xmlPayload) {
+    async function fetchTvData(target) {
         const address = document.getElementById('tvIp').value.trim();
-        if (!address) { showToast(translations[currentLang].toast_no_ip, 'error'); return false; }
-        
+        if (!address) return null;
         const parsedAddress = (address.includes(':') && !address.startsWith('[')) ? `[${address}]` : address;
-        const url = `http://${parsedAddress}:8080/udap/api/${endpoint}`;
-        
-        console.log(`POST ${url}`);
+        const url = `http://${parsedAddress}:8080/udap/api/data?target=${target}`;
 
         try {
-            let statusCode, responseOk;
-            
+            let statusCode, data;
             if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorHttp) {
-                const response = await window.Capacitor.Plugins.CapacitorHttp.post({
-                    url: url,
-                    headers: { 
-                        'Content-Type': 'text/xml; charset=utf-8',
-                        'User-Agent': 'UDAP/2.0'
-                    },
-                    data: xmlPayload
-                });
+                const response = await window.Capacitor.Plugins.CapacitorHttp.get({ url: url, headers: { 'User-Agent': 'UDAP/2.0' }, responseType: 'text' });
                 statusCode = response.status;
-                responseOk = (statusCode >= 200 && statusCode < 300);
+                data = response.data;
             } else {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/xml; charset=utf-8' },
-                    body: xmlPayload,
-                });
+                const response = await fetch(url, { headers: { 'User-Agent': 'UDAP/2.0' } });
                 statusCode = response.status;
-                responseOk = response.ok;
+                if (statusCode === 200) data = await response.text();
+            }
+
+            if (statusCode === 200) {
+                updateConnectionStatus(true);
+                return data;
+            } else {
+                updateConnectionStatus(true);
+                return null;
+            }
+        } catch (e) {
+            updateConnectionStatus(false);
+            return null;
+        }
+    }
+
+    function startPollers() {
+        pollVolume();
+        pollContextUI();
+    }
+
+    async function pollVolume() {
+        if (!document.getElementById('tvIp').value.trim()) return setTimeout(pollVolume, 2000);
+        if (!isPollingVol) {
+            isPollingVol = true;
+            const xml = await fetchTvData('volume_info');
+            if (xml) {
+                localIsMuted = xml.includes('<mute>true</mute>');
+                const match = xml.match(/<level>(\d+)<\/level>/i);
+                const display = document.getElementById('volDisplay');
+                if (localIsMuted) {
+                    display.innerText = '🔇';
+                } else if (match) {
+                    localVolume = parseInt(match[1], 10);
+                    display.innerText = localVolume;
+                }
+            }
+            isPollingVol = false;
+        }
+        setTimeout(pollVolume, 2000);
+    }
+
+    async function pollContextUI() {
+        if (!document.getElementById('tvIp').value.trim()) return setTimeout(pollContextUI, 800);
+        if (!isPollingCtx) {
+            isPollingCtx = true;
+            const xml = await fetchTvData('context_ui');
+            if (xml) {
+                const textVisible = xml.includes('TextVisible');
+                if (textVisible && !isKeyboardOpen) {
+                    isKeyboardOpen = true;
+                    keyboardMode = 'typing';
+                    clearTextBuffer();
+                } else if (!textVisible && isKeyboardOpen) {
+                    isKeyboardOpen = false;
+                }
+            }
+            isPollingCtx = false;
+        }
+        setTimeout(pollContextUI, 800);
+    }
+
+    document.addEventListener('keydown', function(event) {
+        const activeTag = document.activeElement.tagName;
+        if (['INPUT', 'TEXTAREA'].includes(activeTag)) return;
+        if (event.ctrlKey || event.altKey || event.metaKey) return;
+
+        let code = null;
+        switch(event.key) {
+            case 'ArrowUp': code = 12; break;
+            case 'ArrowDown': code = 13; break;
+            case 'ArrowLeft': code = 14; break;
+            case 'ArrowRight': code = 15; break;
+            case 'Home': code = 21; break;
+            case 'PageUp': code = 27; break;
+            case 'PageDown': code = 28; break;
+        }
+
+        if (event.key.length === 1) {
+            event.preventDefault();
+            isKeyboardOpen = true;
+            keyboardMode = 'typing';
+            liveTextBuffer += event.key;
+            performTextSend(liveTextBuffer);
+            haptic(40);
+            return;
+        }
+
+        if (isKeyboardOpen) {
+            if (code) {
+                event.preventDefault();
+                keyboardMode = 'navigating';
+                sendKey(code);
+                return;
+            }
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                if (keyboardMode === 'typing') {
+                    sendKey(23);
+                } else {
+                    sendKey(20);
+                }
+                return;
+            }
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                sendKey(23);
+                return;
+            }
+            if (event.key === 'Backspace') {
+                event.preventDefault();
+                keyboardMode = 'typing';
+                if (liveTextBuffer.length > 0) {
+                    liveTextBuffer = liveTextBuffer.slice(0, -1);
+                    performTextSend(liveTextBuffer);
+                } else { performTextSend(""); }
+                haptic(40);
+                return;
+            }
+            return;
+        }
+
+        switch(event.key) {
+            case 'Enter': code = 20; break;
+            case 'Escape': code = 23; break;
+            case 'Backspace':
+                event.preventDefault();
+                if (liveTextBuffer.length > 0) {
+                    liveTextBuffer = liveTextBuffer.slice(0, -1);
+                    performTextSend(liveTextBuffer);
+                } else { performTextSend(""); }
+                haptic(40);
+                return;
+        }
+
+        if (code) { event.preventDefault(); sendKey(code); return; }
+    });
+
+    async function silentPair(authXml) {
+        const address = document.getElementById('tvIp').value.trim();
+        const parsedAddress = (address.includes(':') && !address.startsWith('[')) ? `[${address}]` : address;
+        const url = `http://${parsedAddress}:8080/udap/api/pairing`;
+        try {
+            if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorHttp) {
+                const response = await window.Capacitor.Plugins.CapacitorHttp.post({ url: url, headers: { 'Content-Type': 'text/xml; charset=utf-8', 'User-Agent': 'UDAP/2.0' }, data: authXml });
+                return (response.status >= 200 && response.status < 300);
+            } else {
+                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/xml; charset=utf-8', 'User-Agent': 'UDAP/2.0' }, body: authXml });
+                return response.ok;
+            }
+        } catch (e) { return false; }
+    }
+
+    async function sendTVRequest(endpoint, xmlPayload, isRetry = false) {
+        const address = document.getElementById('tvIp').value.trim();
+        if (!address) { showToast(translations[currentLang].toast_no_ip, 'error'); return false; }
+
+        const parsedAddress = (address.includes(':') && !address.startsWith('[')) ? `[${address}]` : address;
+        const url = `http://${parsedAddress}:8080/udap/api/${endpoint}`;
+
+        try {
+            let statusCode; let responseOk;
+            if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorHttp) {
+                const response = await window.Capacitor.Plugins.CapacitorHttp.post({ url: url, headers: { 'Content-Type': 'text/xml; charset=utf-8', 'User-Agent': 'UDAP/2.0' }, data: xmlPayload });
+                statusCode = response.status; responseOk = (statusCode >= 200 && statusCode < 300);
+            } else {
+                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'text/xml; charset=utf-8', 'User-Agent': 'UDAP/2.0' }, body: xmlPayload });
+                statusCode = response.status; responseOk = response.ok;
             }
 
             if (responseOk) {
-                console.log(`Success (HTTP ${statusCode})`);
+                updateConnectionStatus(true);
                 return true;
             } else {
-                console.warn(`HTTP Error: ${statusCode}`);
-                showToast(`Error ${statusCode}: TV rejected command`, 'error');
-                
-                if(statusCode === 401) {
+                if (statusCode === 401) {
+                    const savedPin = localStorage.getItem('tvPin');
+                    if (savedPin && !isRetry) {
+                        const authXml = `<?xml version="1.0" encoding="utf-8"?><envelope><api type="pairing"><name>hello</name><value>${savedPin}</value><port>8080</port></api></envelope>`;
+                        if (await silentPair(authXml)) return await sendTVRequest(endpoint, xmlPayload, true);
+                    }
+
                     pendingPinAddress = "";
-                    document.getElementById('auth-step-2').style.display = 'none';
+                    changeTv();
+                    document.getElementById('auth-step-2').style.display = 'block';
+                }
+
+                updateConnectionStatus(true);
+
+                if (statusCode >= 400 && statusCode < 500) {
+                    console.warn(`TV rejeitou comando (Erro ${statusCode}). XML: ${xmlPayload}`);
+                } else if (statusCode >= 500) {
+                    showToast(`Erro ${statusCode}`, 'error');
                 }
                 return false;
             }
         } catch (error) {
-            console.error(`Connection failed: ${error.message}`);
-            showToast(`Connection failed`, 'error');
+            updateConnectionStatus(false);
+            if (endpoint !== 'event') showToast(`Connection failed`, 'error');
             return false;
         }
     }
 
     async function requestPin() {
+        haptic(40);
         const address = document.getElementById('tvIp').value.trim();
-        if (!address) { showToast(translations[currentLang].toast_no_ip, 'error'); return; }
-        
+        if (!address) return;
         localStorage.setItem('tvIp', address);
-        
+
         const xml = `<?xml version="1.0" encoding="utf-8"?><envelope><api type="pairing"><name>showKey</name></api></envelope>`;
-        const success = await sendTVRequest('pairing', xml);
-        
-        if (success) {
+        if (await sendTVRequest('pairing', xml)) {
             pendingPinAddress = address;
             document.getElementById('auth-step-2').style.display = 'block';
             showToast(translations[currentLang].toast_req_pin, 'normal');
-            
             if (pinTimeoutRef) clearTimeout(pinTimeoutRef);
-            pinTimeoutRef = setTimeout(() => {
-                pendingPinAddress = "";
-                document.getElementById('auth-step-2').style.display = 'none';
-                console.log("PIN window expired (60s).");
-            }, PIN_LIFESPAN_MS);
+            pinTimeoutRef = setTimeout(() => { pendingPinAddress = ""; document.getElementById('auth-step-2').style.display = 'none'; }, PIN_LIFESPAN_MS);
         }
     }
 
     async function pairTv() {
+        haptic(40);
         const pin = document.getElementById('pinCode').value.trim();
-        if (!pin) { showToast(translations[currentLang].toast_no_pin, 'error'); return; }
-        
+        if (!pin) return;
         const xml = `<?xml version="1.0" encoding="utf-8"?><envelope><api type="pairing"><name>hello</name><value>${pin}</value><port>8080</port></api></envelope>`;
-        const success = await sendTVRequest('pairing', xml);
-        
-        if (success) {
+        if (await sendTVRequest('pairing', xml)) {
+            localStorage.setItem('tvPin', pin);
             showToast(translations[currentLang].toast_auth_sent, 'success');
             document.getElementById('pinCode').value = '';
             document.getElementById('auth-step-2').style.display = 'none';
-            pendingPinAddress = ""; 
-            if (pinTimeoutRef) clearTimeout(pinTimeoutRef);
+            pendingPinAddress = "";
+
+            document.getElementById('saved-ip-label').innerText = document.getElementById('tvIp').value;
+            document.getElementById('conn-setup').style.display = 'none';
+            document.getElementById('conn-saved').style.display = 'block';
+            updateConnectionStatus(true);
+            startPollers();
         }
     }
 
     function sendKey(code) {
+        haptic(40);
+        clearTextBuffer();
+
+        const display = document.getElementById('volDisplay');
+        if (code === 24 && localVolume !== null && !localIsMuted) {
+            localVolume++;
+            display.innerText = localVolume;
+        } else if (code === 25 && localVolume !== null && !localIsMuted && localVolume > 0) {
+            localVolume--;
+            display.innerText = localVolume;
+        } else if (code === 26) {
+            localIsMuted = !localIsMuted;
+            display.innerText = localIsMuted ? '🔇' : (localVolume !== null ? localVolume : '--');
+        }
+
         const xml = `<?xml version="1.0" encoding="utf-8"?><envelope><api type="command"><name>HandleKeyInput</name><value>${code}</value></api></envelope>`;
         sendTVRequest('command', xml);
     }
-    
+
     function sendCustomKey() {
         const code = document.getElementById('customKeyCode').value;
-        if (code) sendKey(code);
+        if (code) sendKey(parseInt(code, 10));
+    }
+
+    let isTracking = false;
+    let trackX = 0, trackY = 0;
+    let pendingDx = 0, pendingDy = 0;
+    let trackThrottle = null;
+    let hasMovedTrackpad = false;
+
+    let activePointers = new Map();
+    let initialScrollY = 0;
+    let wheelThrottle = null;
+
+    async function initTrackpad(e) {
+        activePointers.set(e.pointerId, e);
+
+        if (activePointers.size === 2) {
+            isTracking = false;
+            const pts = Array.from(activePointers.values());
+            initialScrollY = (pts[0].clientY + pts[1].clientY) / 2;
+            return;
+        }
+
+        if (activePointers.size === 1) {
+            isTracking = true;
+            hasMovedTrackpad = false;
+            trackX = e.clientX;
+            trackY = e.clientY;
+            e.target.setPointerCapture(e.pointerId);
+
+            const cursorXml = `<?xml version="1.0" encoding="utf-8"?><envelope><api type="event"><name>CursorVisible</name><value>true</value></api></envelope>`;
+            await sendTVRequest('event', cursorXml);
+        }
+    }
+
+    function moveTrackpad(e) {
+        if (activePointers.has(e.pointerId)) activePointers.set(e.pointerId, e);
+
+        if (activePointers.size === 2) {
+            const pts = Array.from(activePointers.values());
+            const currentY = (pts[0].clientY + pts[1].clientY) / 2;
+            const dy = currentY - initialScrollY;
+
+            if (Math.abs(dy) > 25 && !wheelThrottle) {
+                haptic(15);
+                const keyCode = dy > 0 ? 12 : 13;
+                sendKey(keyCode);
+
+                initialScrollY = currentY;
+                wheelThrottle = setTimeout(() => { wheelThrottle = null; }, 150);
+            }
+            return;
+        }
+
+        if (!isTracking) return;
+        const dx = e.clientX - trackX;
+        const dy = e.clientY - trackY;
+
+        if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
+            hasMovedTrackpad = true;
+            pendingDx += dx;
+            pendingDy += dy;
+            trackX = e.clientX;
+            trackY = e.clientY;
+
+            if (!trackThrottle) {
+                trackThrottle = setTimeout(() => {
+                    const finalDx = Math.round(pendingDx * 3.0);
+                    const finalDy = Math.round(pendingDy * 3.0);
+                    const moveXml = `<?xml version="1.0" encoding="utf-8"?><envelope><api type="command"><name>HandleTouchMove</name><x>${finalDx}</x><y>${finalDy}</y></api></envelope>`;
+                    sendTVRequest('command', moveXml);
+                    pendingDx = 0;
+                    pendingDy = 0;
+                    trackThrottle = null;
+                }, 120);
+            }
+        }
+    }
+
+    function endTrackpad(e) {
+        activePointers.delete(e.pointerId);
+
+        if (activePointers.size === 0) {
+            if (isTracking && !hasMovedTrackpad) {
+                haptic(50);
+                const clickXml = `<?xml version="1.0" encoding="utf-8"?><envelope><api type="command"><name>HandleTouchClick</name></api></envelope>`;
+                sendTVRequest('command', clickXml);
+            }
+            isTracking = false;
+        }
+    }
+
+    function handleWheel(e) {
+        e.preventDefault();
+        if (!wheelThrottle) {
+            haptic(15);
+            const keyCode = e.deltaY > 0 ? 13 : 12;
+            sendKey(keyCode);
+
+            wheelThrottle = setTimeout(() => { wheelThrottle = null; }, 150);
+        }
+    }
+
+    async function dropFocus() {
+        haptic(30);
+        const cursorXml = `<?xml version="1.0" encoding="utf-8"?><envelope><api type="event"><name>CursorVisible</name><value>true</value></api></envelope>`;
+        await sendTVRequest('event', cursorXml);
+
+        const moveXml = `<?xml version="1.0" encoding="utf-8"?><envelope><api type="command"><name>HandleTouchMove</name><x>-500</x><y>-500</y></api></envelope>`;
+        sendTVRequest('command', moveXml);
+        sendTVRequest('command', moveXml);
+
+        setTimeout(() => {
+            const clickXml = `<?xml version="1.0" encoding="utf-8"?><envelope><api type="command"><name>HandleTouchClick</name></api></envelope>`;
+            sendTVRequest('command', clickXml);
+        }, 300);
+    }
+
+    async function performTextSend(text) {
+        const safeText = text ? text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') : "";
+        const xml = `<?xml version="1.0" encoding="utf-8"?><envelope><api type="event"><name>TextEdited</name><state>Insert</state><value>${safeText}</value></api></envelope>`;
+        return await sendTVRequest('event', xml);
+    }
+
+    async function sendTextFromInput() {
+        const text = document.getElementById('keyboardInput').value;
+        if (await performTextSend(text)) {
+            document.getElementById('keyboardInput').value = '';
+            clearTextBuffer();
+        }
+    }
+
+    async function sendTextPrompt() {
+        const txt = prompt("Digite o texto a ser enviado para a TV:\n(A TV precisa estar com o teclado aberto)");
+        if (txt !== null) { performTextSend(txt); clearTextBuffer(); }
+    }
+
+    function toggleScreencast() {
+        isScreencasting = !isScreencasting;
+        const btn = document.getElementById('btnScreencast');
+        if (isScreencasting) {
+            btn.innerText = translations[currentLang].btn_cast_stop;
+            btn.style.backgroundColor = '#f44336';
+            screencastLoop();
+        } else {
+            btn.innerText = translations[currentLang].btn_cast_start;
+            btn.style.backgroundColor = '#2196f3';
+        }
+    }
+
+    async function screencastLoop() {
+        if (!isScreencasting) return;
+        await getTVScreenshot();
+        setTimeout(screencastLoop, 600);
+    }
+
+    function saveScreenshot() {
+        const imgEl = document.getElementById('screenshotImg');
+        if (!imgEl.src) return;
+        const a = document.createElement('a');
+        a.href = imgEl.src;
+        a.download = `LG_TV_Screen_${new Date().getTime()}.jpg`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        showToast("Imagem salva", "success");
+    }
+
+    function openTheater() {
+        const tImg = document.getElementById('theaterImg');
+        const sImg = document.getElementById('screenshotImg');
+        if(sImg.src) tImg.src = sImg.src;
+        document.getElementById('theater-mode').style.display = 'flex';
+    }
+
+    function closeTheater() { document.getElementById('theater-mode').style.display = 'none'; }
+
+    async function getTVScreenshot(isRetry = false) {
+        const address = document.getElementById('tvIp').value.trim();
+        if (!address) return;
+
+        const parsedAddress = (address.includes(':') && !address.startsWith('[')) ? `[${address}]` : address;
+        const url = `http://${parsedAddress}:8080/udap/api/data?target=screen_image`;
+
+        try {
+            let statusCode; let imgDataUrl;
+
+            if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorHttp) {
+                const response = await window.Capacitor.Plugins.CapacitorHttp.get({ url: url, headers: { 'User-Agent': 'UDAP/2.0' }, responseType: 'blob' });
+                statusCode = response.status;
+                if (statusCode === 200) imgDataUrl = `data:image/jpeg;base64,${response.data}`;
+            } else {
+                const response = await fetch(url, { headers: { 'User-Agent': 'UDAP/2.0' } });
+                statusCode = response.status;
+                if (statusCode === 200) {
+                    const blob = await response.blob();
+                    imgDataUrl = URL.createObjectURL(blob);
+                }
+            }
+
+            if (statusCode === 200) {
+                updateConnectionStatus(true);
+                const imgEl = document.getElementById('screenshotImg');
+                const tImg = document.getElementById('theaterImg');
+
+                if (imgEl.src && imgEl.src.startsWith('blob:')) URL.revokeObjectURL(imgEl.src);
+
+                imgEl.src = imgDataUrl;
+                imgEl.style.display = 'block';
+                document.getElementById('screen-actions').style.display = 'flex';
+
+                if (document.getElementById('theater-mode').style.display !== 'none') {
+                    tImg.src = imgDataUrl;
+                }
+            } else {
+                updateConnectionStatus(true);
+                if (statusCode === 401 && !isRetry) {
+                    const savedPin = localStorage.getItem('tvPin');
+                    if (savedPin) {
+                        const authXml = `<?xml version="1.0" encoding="utf-8"?><envelope><api type="pairing"><name>hello</name><value>${savedPin}</value><port>8080</port></api></envelope>`;
+                        if (await silentPair(authXml)) return getTVScreenshot(true);
+                    }
+                }
+            }
+        } catch (e) {
+            updateConnectionStatus(false);
+            if(!isScreencasting) showToast("Failed to fetch screen", "error");
+        }
     }
 </script>
 
